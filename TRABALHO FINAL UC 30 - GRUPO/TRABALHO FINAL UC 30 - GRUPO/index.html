@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>SaudeConecta | Clínica Social com Médicos Voluntários</title>
+    <style>
+        /* ========== ESTILOS GLOBAIS ========== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #e0f2e9 0%, #c8e6df 100%);
+            min-height: 100vh;
+            padding: 2rem 1rem;
+        }
+
+        /* Container principal - simulando o terminal colorido */
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            background: #ffffffdd;
+            backdrop-filter: blur(2px);
+            border-radius: 2rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            border: 1px solid #2c7a5e40;
+        }
+
+        /* Cabeçalho */
+        .header {
+            background: #0b3b2f;
+            padding: 1.5rem 2rem;
+            text-align: center;
+            color: white;
+        }
+        .header h1 {
+            font-size: 2rem;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .header p {
+            opacity: 0.9;
+            margin-top: 8px;
+            font-weight: 500;
+        }
+        .badge-ods {
+            background: #1f8a4c;
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            margin-top: 8px;
+        }
+
+        /* Grid principal: menu + conteúdo */
+        .dashboard {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        /* Menu lateral estilo clínica */
+        .menu-side {
+            background: #1e2f2a;
+            width: 280px;
+            padding: 2rem 1rem;
+            color: #ecfdf5;
+        }
+        .menu-side h3 {
+            font-size: 1.3rem;
+            border-left: 4px solid #4ade80;
+            padding-left: 12px;
+            margin-bottom: 24px;
+        }
+        .menu-btn {
+            display: block;
+            width: 100%;
+            background: #2d4a3e;
+            border: none;
+            margin: 12px 0;
+            padding: 12px;
+            font-size: 1rem;
+            font-weight: bold;
+            color: white;
+            border-radius: 40px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+            padding-left: 20px;
+        }
+        .menu-btn:hover {
+            background: #3b6b58;
+            transform: scale(0.98);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        .menu-btn.ativo {
+            background: #0f5c46;
+            border-left: 5px solid #facc15;
+        }
+
+        /* Área de conteúdo principal */
+        .content {
+            flex: 1;
+            background: #fefcf5;
+            padding: 2rem;
+            min-height: 70vh;
+        }
+
+        /* Cards e formulários */
+        .card {
+            background: white;
+            border-radius: 24px;
+            padding: 1.8rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+            border: 1px solid #cbd5e1;
+        }
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+        label {
+            font-weight: 600;
+            display: block;
+            margin-bottom: 6px;
+            color: #1e3a2f;
+        }
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 20px;
+            border: 1px solid #cbd5e1;
+            font-size: 1rem;
+            background: #fff;
+        }
+        button {
+            background: #0f5c46;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-top: 8px;
+        }
+        button:hover {
+            background: #1e7a5c;
+        }
+        .pulseira-cor {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-weight: bold;
+        }
+        .verde { background: #22c55e; color: #052e16; }
+        .amarelo { background: #eab308; color: #3e2c00; }
+        .vermelho { background: #ef4444; color: white; }
+
+        .lista-registros {
+            max-height: 500px;
+            overflow-y: auto;
+            border-radius: 20px;
+        }
+        .registro-item {
+            background: #f9fafb;
+            border-left: 6px solid #2c7a5e;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 16px;
+            transition: 0.1s;
+        }
+        .badge {
+            background: #e2e8f0;
+            border-radius: 30px;
+            padding: 2px 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .text-muted {
+            color: #475569;
+            font-size: 0.85rem;
+        }
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        hr {
+            margin: 1rem 0;
+        }
+        .footer-info {
+            background: #eef2ef;
+            padding: 1rem;
+            border-radius: 20px;
+            text-align: center;
+            font-size: 0.85rem;
+            margin-top: 2rem;
+        }
+        @media (max-width: 780px) {
+            .dashboard { flex-direction: column; }
+            .menu-side { width: 100%; text-align: center; }
+            .grid-2 { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>🏥 SaudeConecta <span style="font-size:1.4rem;">💚</span></h1>
+        <p>Médicos voluntários · Atendimento humanizado para pessoas de baixa renda</p>
+        <div class="badge-ods">🎯 ODS 3 – Saúde e Bem-Estar | ♿ Acessibilidade e inclusão</div>
+    </div>
+
+    <div class="dashboard">
+        <!-- MENU ESTILO FLUXOGRAMA -->
+        <div class="menu-side">
+            <h3>📋 MENU PRINCIPAL</h3>
+            <button class="menu-btn" data-opcao="cadMedico">1️⃣ Cadastrar Médico</button>
+            <button class="menu-btn" data-opcao="cadAtend">2️⃣ Cadastrar Atendimento</button>
+            <button class="menu-btn" data-opcao="listarAtend">3️⃣ Listar Atendimentos</button>
+            <button class="menu-btn" data-opcao="buscarPac">4️⃣ Buscar Paciente</button>
+            <button class="menu-btn" data-opcao="listarMedicos">5️⃣ Médicos Disponíveis</button>
+            <hr style="margin: 20px 0; border-color:#3d5a50;">
+            <div class="text-muted" style="color:#cbd5e1; font-size:0.75rem; text-align:center;">
+                CRM: 6 dígitos<br>
+                Pulseira: Verde🟢 / Amarelo🟡 / Vermelho🔴
+            </div>
+        </div>
+
+        <!-- ÁREA DINÂMICA (conteúdo) -->
+        <div class="content" id="conteudoDinamico">
+            <!-- Bem-vindo inicial -->
+            <div class="card" id="welcomeCard">
+                <h2 style="color:#0f5c46;">🌟 Bem-vindo(a) ao sistema SaudeConecta</h2>
+                <p>Utilize o menu ao lado para gerenciar médicos voluntários, atendimentos e pacientes.  
+                Baseado no fluxograma com validação de CRM (6 dígitos), cores de pulseira e classificação preferencial.</p>
+                <div class="footer-info">
+                    ✅ Relação ODS 3: Acesso gratuito à saúde<br>
+                    ♿ Acessibilidade: textos claros, contraste, campos com validação.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ========== ESTRUTURA DE DADOS (SIMULA O BANCO EM MEMÓRIA) ==========
+    let medicos = [];        // { nome, especialidade, crm, nome_formatado, crm_formatado }
+    let atendimentos = [];   // cada atendimento = paciente + dados do fluxo
+
+    // Especialidades (mesmas do Python)
+    const ESPECIALIDADES = [
+        "clinico geral", "pediatria", "ginecologista", "odontologia", "dermatologista", 
+        "psicologia", "cardiologia", "neurologia", "ortopedia", "oftalmologia", 
+        "nutrologia", "fisioterapia"
+    ];
+
+    // Tipos de atendimento (preferencial)
+    const TIPOS_ATEND = {
+        1: "Atendimento Normal (adulto)",
+        2: "Atendimento Preferencial (idoso/gestante/comorbidades)",
+        3: "Atendimento Infantil (criança)"
+    };
+
+    // ========== FUNÇÕES AUXILIARES ==========
+    function formatarCRM(crm) {
+        if (crm && crm.length === 6 && /^\d+$/.test(crm)) return crm.slice(0,3) + "." + crm.slice(3);
+        return crm;
+    }
+
+    function formatarNomeMedico(nome) {
+        if (!nome) return "Dr.(a)";
+        let primeiro = nome.trim().split(" ")[0];
+        if (primeiro.endsWith("a")) return `Dra. ${nome}`;
+        if (primeiro.endsWith("o")) return `Dr. ${nome}`;
+        return `Dr.(a) ${nome}`;
+    }
+
+    function obterCorPulseiraTexto(corKey) {
+        if (corKey === "normal") return '<span class="pulseira-cor verde">🟢 VERDE (Normal)</span>';
+        if (corKey === "grave") return '<span class="pulseira-cor amarelo">🟡 AMARELO (Grave)</span>';
+        if (corKey === "emergencia") return '<span class="pulseira-cor vermelho">🔴 VERMELHO (Emergência)</span>';
+        return corKey;
+    }
+
+    // Validações
+    function validarCRM(crm) {
+        return /^\d{6}$/.test(crm);
+    }
+    function validarNome(nome) {
+        return nome && nome.trim().length >= 3;
+    }
+    function validarData(dataStr) {
+        let partes = dataStr.split("/");
+        if (partes.length !== 3) return false;
+        let dia = parseInt(partes[0]), mes = parseInt(partes[1]), ano = parseInt(partes[2]);
+        if (isNaN(dia) || isNaN(mes) || isNaN(ano)) return false;
+        if (dia < 1 || dia > 31 || mes < 1 || mes > 12 || ano < 1900 || ano > 2100) return false;
+        return true;
+    }
+
+    // Renderizar menu ativo e conteúdo
+    let activeSection = "welcome";
+
+    function renderConteudo() {
+        const container = document.getElementById("conteudoDinamico");
+        if (activeSection === "cadMedico") container.innerHTML = renderCadastroMedico();
+        else if (activeSection === "cadAtend") container.innerHTML = renderCadastroAtendimento();
+        else if (activeSection === "listarAtend") container.innerHTML = renderListarAtendimentos();
+        else if (activeSection === "buscarPac") container.innerHTML = renderBuscarPaciente();
+        else if (activeSection === "listarMedicos") container.innerHTML = renderListarMedicos();
+        else container.innerHTML = `
+            <div class="card">
+                <h2 style="color:#0f5c46;">🏥 Clínica SaudeConecta</h2>
+                <p>Escolha uma opção no menu para iniciar. Sistema de gestão de médicos voluntários e atendimento social.</p>
+                <div class="footer-info">💡 Dica: O CRM deve ter exatamente 6 dígitos. Pulseiras ajudam na classificação de risco.</div>
+            </div>`;
+    }
+
+    // ---------- TELA CADASTRO MÉDICO ----------
+    function renderCadastroMedico() {
+        return `
+            <div class="card">
+                <h2>👨‍⚕️ Cadastrar Médico Voluntário</h2>
+                <div class="form-group">
+                    <label>Nome completo:</label>
+                    <input type="text" id="medNome" placeholder="Ex: Maria Silva">
+                </div>
+                <div class="form-group">
+                    <label>Especialidade:</label>
+                    <select id="medEspecialidade">
+                        ${ESPECIALIDADES.map(esp => `<option value="${esp}">${esp.toUpperCase()}</option>`).join('')}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>CRM (6 dígitos numéricos):</label>
+                    <input type="text" id="medCRM" maxlength="6" placeholder="Ex: 123456">
+                </div>
+                <button onclick="cadastrarMedicoAction()">✅ Cadastrar Médico</button>
+                <div id="msgMedico" class="text-muted" style="margin-top:12px;"></div>
+            </div>
+        `;
+    }
+
+    window.cadastrarMedicoAction = function() {
+        let nome = document.getElementById("medNome").value.trim();
+        let especialidade = document.getElementById("medEspecialidade").value;
+        let crm = document.getElementById("medCRM").value.trim();
+        let msgDiv = document.getElementById("msgMedico");
+
+        if (!validarNome(nome)) {
+            msgDiv.innerHTML = "<span style='color:#b91c1c;'>❌ Nome inválido (mínimo 3 caracteres).</span>";
+            return;
+        }
+        if (!validarCRM(crm)) {
+            msgDiv.innerHTML = "<span style='color:#b91c1c;'>❌ CRM inválido! Deve ter exatamente 6 dígitos numéricos.</span>";
+            return;
+        }
+        // Evitar CRM duplicado?
+        if (medicos.some(m => m.crm === crm)) {
+            msgDiv.innerHTML = "<span style='color:#b91c1c;'>⚠️ CRM já cadastrado.</span>";
+            return;
+        }
+        let nomeFormatado = formatarNomeMedico(nome);
+        let crmFormatado = formatarCRM(crm);
+        medicos.push({ nome, especialidade, crm, nomeFormatado, crmFormatado });
+        msgDiv.innerHTML = `<span style='color:#15803d;'>✅ Médico ${nomeFormatado} (CRM: ${crmFormatado}) cadastrado com sucesso!</span>`;
+        document.getElementById("medNome").value = "";
+        document.getElementById("medCRM").value = "";
+    };
+
+    // ---------- CADASTRO ATENDIMENTO (Paciente) ----------
+    function renderCadastroAtendimento() {
+        return `
+            <div class="card">
+                <h2>📝 Cadastrar Atendimento (Paciente)</h2>
+                <div class="form-group">
+                    <label>Nome completo do paciente:</label>
+                    <input type="text" id="pacNome" placeholder="Ex: Ana Souza">
+                </div>
+                <div class="form-group">
+                    <label>Tipo de Atendimento:</label>
+                    <select id="tipoAtend">
+                        <option value="1">${TIPOS_ATEND[1]}</option>
+                        <option value="2">${TIPOS_ATEND[2]}</option>
+                        <option value="3">${TIPOS_ATEND[3]}</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Especialidade desejada:</label>
+                    <select id="atendEspecialidade">
+                        ${ESPECIALIDADES.map(esp => `<option value="${esp}">${esp.toUpperCase()}</option>`).join('')}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Cor da Pulseira (gravidade):</label>
+                    <select id="corPulseira">
+                        <option value="normal">🟢 Verde - Normal</option>
+                        <option value="grave">🟡 Amarelo - Grave</option>
+                        <option value="emergencia">🔴 Vermelho - Emergência</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Data do atendimento (DD/MM/AAAA):</label>
+                    <input type="text" id="dataAtend" placeholder="Ex: 20/04/2026">
+                </div>
+                <button onclick="carregarMedicosDisponiveisUI()">🔍 Ver médicos disponíveis</button>
+                <div id="listaMedicosDisponiveis" style="margin-top: 20px;"></div>
+                <div id="msgAtendimento" class="text-muted" style="margin-top:12px;"></div>
+            </div>
+        `;
+    }
+
+    window.carregarMedicosDisponiveisUI = function() {
+        let especialidade = document.getElementById("atendEspecialidade").value;
+        let medicosFiltrados = medicos.filter(m => m.especialidade === especialidade);
+        let container = document.getElementById("listaMedicosDisponiveis");
+        if (medicosFiltrados.length === 0) {
+            container.innerHTML = `<div style="background:#fee2e2; padding:1rem; border-radius:20px;">❌ Nenhum médico disponível para a especialidade <strong>${especialidade}</strong>. Cadastre um médico primeiro.</div>`;
+            return;
+        }
+        let html = `<div style="background:#e6f7ec; border-radius:20px; padding:1rem;"><strong>👩‍⚕️ Médicos disponíveis para ${especialidade}:</strong><ul style="margin-top:10px;">`;
+        medicosFiltrados.forEach((med, idx) => {
+            html += `<li><strong>${med.nomeFormatado}</strong> | CRM: ${med.crmFormatado}</li>`;
+        });
+        html += `</ul><select id="selectMedicoAtend" style="margin-top:12px;">`;
+        medicosFiltrados.forEach((med, idx) => {
+            html += `<option value="${idx}">${med.nomeFormatado} (CRM ${med.crmFormatado})</option>`;
+        });
+        html += `</select><br><button style="margin-top:12px;" onclick="confirmarCadastroAtendimento()">✅ Confirmar Atendimento</button></div>`;
+        container.innerHTML = html;
+    };
+
+    window.confirmarCadastroAtendimento = function() {
+        let nomePac = document.getElementById("pacNome").value.trim();
+        if (!validarNome(nomePac)) { alert("Nome do paciente inválido (mínimo 3 caracteres)"); return; }
+        let tipoSelect = document.getElementById("tipoAtend").value;
+        let tipoNome = TIPOS_ATEND[tipoSelect];
+        let especialidade = document.getElementById("atendEspecialidade").value;
+        let corPulseira = document.getElementById("corPulseira").value;
+        let dataStr = document.getElementById("dataAtend").value.trim();
+        if (!validarData(dataStr)) { alert("Data inválida! Use DD/MM/AAAA."); return; }
+        
+        let medicosFiltrados = medicos.filter(m => m.especialidade === especialidade);
+        if (medicosFiltrados.length === 0) { alert("Não há médico disponível para esta especialidade. Cadastre antes."); return; }
+        let selectMed = document.getElementById("selectMedicoAtend");
+        if (!selectMed) { alert("Selecione um médico na lista."); return; }
+        let idx = parseInt(selectMed.value);
+        let medicoEscolhido = medicosFiltrados[idx];
+        
+        let corExibida = (corPulseira === "normal") ? "🟢 VERDE (Normal)" : (corPulseira === "grave") ? "🟡 AMARELO (Grave)" : "🔴 VERMELHO (Emergência)";
+        let novoAtendimento = {
+            paciente: nomePac,
+            tipoAtendimento: tipoNome,
+            especialidade: especialidade,
+            data: dataStr,
+            medico: medicoEscolhido.nome,
+            medicoFormatado: medicoEscolhido.nomeFormatado,
+            crmMedico: medicoEscolhido.crm,
+            crmFormatado: medicoEscolhido.crmFormatado,
+            corPulseiraKey: corPulseira,
+            corExibida: corExibida,
+            preferencial: (tipoSelect === "2" ? "Preferencial" : (tipoSelect === "3" ? "Infantil" : "Normal"))
+        };
+        atendimentos.push(novoAtendimento);
+        document.getElementById("msgAtendimento").innerHTML = `<span style='color:#15803d;'>✅ Atendimento de ${nomePac} cadastrado com sucesso! Médico: ${medicoEscolhido.nomeFormatado}</span>`;
+        // limpar campos básicos
+        document.getElementById("pacNome").value = "";
+        document.getElementById("dataAtend").value = "";
+        document.getElementById("listaMedicosDisponiveis").innerHTML = "";
+    };
+
+    // ---------- LISTAR ATENDIMENTOS ----------
+    function renderListarAtendimentos() {
+        if (atendimentos.length === 0) {
+            return `<div class="card"><h3>📋 Lista de Atendimentos</h3><p style="color:gray;">Nenhum atendimento cadastrado até o momento.</p></div>`;
+        }
+        let html = `<div class="card"><h3>📋 Todos os Atendimentos</h3><div class="lista-registros">`;
+        atendimentos.forEach((at, i) => {
+            html += `
+                <div class="registro-item">
+                    <strong>🧑‍🤝‍🧑 Paciente:</strong> ${at.paciente}<br>
+                    <strong>🏷️ Tipo:</strong> ${at.tipoAtendimento}<br>
+                    <strong>🩺 Especialidade:</strong> ${at.especialidade.toUpperCase()}<br>
+                    <strong>📅 Data:</strong> ${at.data}<br>
+                    <strong>👨‍⚕️ Médico:</strong> ${at.medicoFormatado} (CRM: ${at.crmFormatado})<br>
+                    <strong>🎗️ Pulseira:</strong> ${obterCorPulseiraTexto(at.corPulseiraKey)}<br>
+                </div>
+            `;
+        });
+        html += `</div></div>`;
+        return html;
+    }
+
+    // ---------- BUSCAR PACIENTE (por nome) ----------
+    function renderBuscarPaciente() {
+        return `
+            <div class="card">
+                <h3>🔍 Buscar Paciente</h3>
+                <div class="form-group">
+                    <input type="text" id="buscaNome" placeholder="Digite parte do nome do paciente">
+                    <button onclick="executarBuscaPaciente()">Buscar</button>
+                </div>
+                <div id="resultadoBusca"></div>
+            </div>
+        `;
+    }
+
+    window.executarBuscaPaciente = function() {
+        let termo = document.getElementById("buscaNome").value.trim().toLowerCase();
+        let resultados = atendimentos.filter(at => at.paciente.toLowerCase().includes(termo));
+        let divRes = document.getElementById("resultadoBusca");
+        if (resultados.length === 0) {
+            divRes.innerHTML = "<div class='registro-item' style='background:#fff0f0;'>❌ Nenhum paciente encontrado.</div>";
+            return;
+        }
+        let html = `<h4>✅ ${resultados.length} paciente(s) encontrado(s):</h4>`;
+        resultados.forEach(p => {
+            html += `<div class="registro-item">
+                        <strong>Nome:</strong> ${p.paciente}<br>
+                        <strong>Tipo:</strong> ${p.tipoAtendimento}<br>
+                        <strong>Especialidade:</strong> ${p.especialidade}<br>
+                        <strong>Data:</strong> ${p.data}<br>
+                        <strong>Médico:</strong> ${p.medicoFormatado}<br>
+                        <strong>Pulseira:</strong> ${obterCorPulseiraTexto(p.corPulseiraKey)}
+                    </div>`;
+        });
+        divRes.innerHTML = html;
+    };
+
+    // ---------- LISTAR TODOS OS MÉDICOS (disponíveis) ----------
+    function renderListarMedicos() {
+        if (medicos.length === 0) {
+            return `<div class="card"><h3>👩‍⚕️ Médicos Disponíveis</h3><p>Nenhum médico cadastrado ainda. Use a opção 1.</p></div>`;
+        }
+        let html = `<div class="card"><h3>👩‍⚕️ Médicos Voluntários Cadastrados</h3><div class="lista-registros">`;
+        medicos.forEach((med, idx) => {
+            html += `
+                <div class="registro-item">
+                    <strong>${med.nomeFormatado}</strong><br>
+                    Especialidade: ${med.especialidade.toUpperCase()}<br>
+                    CRM: ${med.crmFormatado}
+                </div>
+            `;
+        });
+        html += `</div><div class="footer-info">Total: ${medicos.length} médicos disponíveis para atendimento social.</div></div>`;
+        return html;
+    }
+
+    // Controle dos botões do menu
+    function bindMenuEvents() {
+        document.querySelectorAll(".menu-btn").forEach(btn => {
+            btn.addEventListener("click", (e) => {
+                let op = btn.getAttribute("data-opcao");
+                if (op === "cadMedico") activeSection = "cadMedico";
+                else if (op === "cadAtend") activeSection = "cadAtend";
+                else if (op === "listarAtend") activeSection = "listarAtend";
+                else if (op === "buscarPac") activeSection = "buscarPac";
+                else if (op === "listarMedicos") activeSection = "listarMedicos";
+                renderConteudo();
+                // após renderizar, se for tela de atendimento, manter funções
+            });
+        });
+    }
+
+    // Inicialização
+    renderConteudo();
+    bindMenuEvents();
+    // Exemplo médico pré-cadastrado para demonstração (opcional, para teste rápido)
+    setTimeout(() => {
+        if(medicos.length === 0){
+            // médico fictício apenas para exemplificar visualmente (pode ser removido)
+            medicos.push({
+                nome: "Juliana Mendes", especialidade: "clinico geral", crm: "884512",
+                nomeFormatado: "Dra. Juliana Mendes", crmFormatado: "884.512"
+            });
+            medicos.push({
+                nome: "Carlos Andrade", especialidade: "pediatria", crm: "332109",
+                nomeFormatado: "Dr. Carlos Andrade", crmFormatado: "332.109"
+            });
+            renderConteudo(); 
+        }
+    }, 100);
+</script>
+</body>
+</html>
